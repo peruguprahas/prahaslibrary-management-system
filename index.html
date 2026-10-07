@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prahas Library Management Systemm</title>
+    <style>
+        /* Modern Minimalist Global System Theme Styling */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f8fafc; color: #1e293b; padding-bottom: 40px; }
+        
+        /* 1. START / LOGIN SCREEN STATE LAYER */
+        .login-container { min-height: screen; height: 100vh; display: flex; items-center: center; justify-content: center; background-color: #0f172a; align-items: center; }
+        .login-card { background: white; max-width: 400px; w-width: 100%; width: 380px; padding: 32px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3); text-align: center; }
+        .login-card h2 { font-size: 24px; font-weight: 800; color: #0f172a; margin-top: 12px; margin-bottom: 6px; }
+        .login-card p { font-size: 13px; color: #64748b; margin-bottom: 24px; }
+        .form-group { text-align: left; margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 700; uppercase: uppercase; text-transform: uppercase; tracking-wider: 0.05em; color: #64748b; margin-bottom: 6px; }
+        .form-control { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; color: #1e293b; transition: all 0.2s; }
+        .form-control:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
+        .btn-primary { width: 100%; background-color: #2563eb; color: white; padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
+        .btn-primary:hover { background-color: #1d4ed8; }
+
+        /* 2. MAIN DASHBOARD REGISTRY PLATFORM */
+        .app-hidden { display: none !important; }
+        .navbar { background-color: #0f172a; color: white; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .navbar-brand { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .navbar-actions { display: flex; align-items: center; gap: 12px; }
+        .user-badge { font-size: 13px; color: #cbd5e1; }
+        .role-tag { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: rgba(37, 99, 235, 0.2); color: #3b82f6; border: 1px solid rgba(37, 99, 235, 0.3); }
+        .btn-logout { background: #1e293b; border: 1px solid #334155; color: #94a3b8; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+        .btn-logout:hover { background: #7f1d1d; color: #fca5a5; border-color: #991b1b; }
+
+        /* Layout Grid Splitter System Flows */
+        .workspace-layout { max-width: 1200px; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
+        .sidebar { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; height: fit-content; }
+        .sidebar h2 { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+        .sidebar p { font-size: 12px; color: #64748b; line-height: 1.5; margin-bottom: 16px; }
+        .nav-menu { display: flex; flex-col: column; flex-direction: column; gap: 6px; }
+        .nav-btn { text-align: left; padding: 10px 14px; border: none; background: none; border-radius: 8px; font-size: 13px; font-weight: 600; color: #475569; cursor: pointer; transition: all 0.2s; }
+        .nav-btn:hover { background-color: #f1f5f9; color: #0f172a; }
+        .nav-btn.active { background-color: #2563eb; color: white; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
+
+        /* Content Canvas Containers */
+        .canvas-card { background: white; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0; min-height: 480px; }
+        .canvas-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 16px; }
+        .canvas-header h3 { font-size: 18px; font-weight: 700; color: #0f172a; }
+        .canvas-header p { font-size: 12px; color: #64748b; margin-top: 2px; }
+
+        /* Tables & Inventory Data Sheets */
+        .table-responsive { overflow-x: auto; margin-top: 12px; }
+        .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+        .data-table th { background: #f8fafc; padding: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; font-size: 11px; border-bottom: 2px solid #e2e8f0; }
+        .data-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: middle; }
+        .data-table tr:hover { background-color: #f8fafc; }
+        .book-title { font-weight: 600; color: #0f172a; }
+        .book-author { font-size: 11px; color: #64748b; }
+        
+        /* Status Indicator Elements */
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; display: inline-block; }
+        .bg-available { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .bg-partial { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .bg-issued { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+        /* Core UI Form Elements */
+        .admin-form-box { background: #f8fafc; padding: 16px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .form-box-title { grid-column: span 3; font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; }
+        .form-box-btn { grid-column: span 3; background-color: #0f172a; color: white; padding: 10px; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .form-box-btn:hover { background-color: #1e293b; }
+        
+        .fine-card { padding: 14px; border: 1px solid #e2e8f0; border-radius: 10px; background: #f8fafc; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .fine-amount { font-size: 16px; font-weight: 800; color: #0f172a; }
+    </style>
+</head>
+<body>
+
+    <!-- ========================================== -->
+    <!-- 1. START / LOGIN SCREEN STATE LAYER         -->
+    <!-- ========================================== -->
+    <div id="login-screen" class="login-container">
+        <div class="login-card">
+            <div>
+                <span style="font-size: 40px;">📚</span>
+                <h2>Prahas Library Management System</h2>
+                <p>Sign in to access your dashboard system flow</p>
+            </div>
+            
+            <div>
+                <div class="form-group">
+                    <label>Select User Workspace Role</label>
+                    <select id="login-role" class="form-control" style="height: 42px;">
+                        <option value="ADMIN">🛡️ System Administrator</option>
+                        <option value="STUDENT">🎓 Registered Student</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Username / Registration ID</label>
+                    <input type="text" id="login-username" value="Prahas" class="form-control" placeholder="Enter identification code...">
+                </div>
+                <div class="form-group">
+                    <label>Access Credentials</label>
+                    <input type="password" value="1234" class="form-control">
+                </div>
+                <button onclick="handleSystemLogin()" class="btn-primary">
+                    Launch Session Workspace →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 2. MAIN APPLICATION WORKSPACE DASHBOARD   -->
+    <!-- ========================================== -->
+    <div id="main-application" class="app-hidden">
+        
+        <!-- Global App Top Navbar Header -->
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <span>📚</span> Prahas Library Management System
+            </div>
+            <div class="navbar-actions">
+                <span id="nav-user-display" class="user-badge"></span>
+                <span id="role-tag" class="role-tag">ADMIN</span>
+                <button onclick="handleSystemLogout()" class="btn-logout">🔌 Terminate Session</button>
+            </div>
+        </nav>
+
+        <!-- Main Workspace Split Grid Layout Flow -->
+        <div class="workspace-layout">
+            
+            <!-- Dynamic Navigation Controls Sidebar -->
+            <div class="sidebar">
+                <h2>System Flow Controls</h2>
+                <p id="flow-description"></p>
+                <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 12px 0;">
+                <div id="sidebar-navigation-links" class="nav-menu">
+                    <!-- Buttons load dynamically based on role -->
+                </div>
+            </div>
+
+            <!-- Dynamic Workspace Content Canvas Canvas Panel -->
+            <div class="canvas-card">
+                <div id="workspace-canvas">
+                    <!-- Module view screens inject inside here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 3. DATA ENGINE & WORKFLOW ROUTING INTERFACE -->
+    <!-- ========================================== -->
+    
+    <!-- ========================================== -->
+    <!-- 3. LIVE DATABASE REST API CONNECTOR ENGINE -->
+    <!-- ========================================== -->
+    <script>
+        const BACKEND_URL = "http://localhost:8080/api";
+        let authenticatedUser = null;
+        let activeRoleMode = 'ADMIN';
+        let currentActiveView = 'inventory';
+
+        // --- AUTHENTICATION AND ROLE REDIRECTION ROUTER ---
+        function handleSystemLogin() {
+            const roleSelect = document.getElementById('login-role').value;
+            const userField = document.getElementById('login-username').value.trim();
+            
+            if(!userField) { alert("Please input a valid identification identifier."); return; }
+            
+            authenticatedUser = userField;
+            activeRoleMode = roleSelect;
+            currentActiveView = 'inventory'; 
+            
+            // Redirect layouts according to abstract rules
+            document.getElementById('login-screen').classList.add('app-hidden');
+            document.getElementById('main-application').classList.remove('app-hidden');
+            document.getElementById('nav-user-display').innerHTML = `Welcome, <strong>${authenticatedUser}</strong>`;
+            
+            const rTag = document.getElementById('role-tag');
+            rTag.innerText = activeRoleMode;
+            rTag.style.background = activeRoleMode === 'ADMIN' ? 'rgba(22, 163, 74, 0.15)' : 'rgba(147, 51, 234, 0.15)';
+            rTag.style.color = activeRoleMode === 'ADMIN' ? '#16a34a' : '#9333ea';
+            rTag.style.borderColor = activeRoleMode === 'ADMIN' ? 'rgba(22, 163, 74, 0.3)' : 'rgba(147, 51, 234, 0.3)';
+
+            // Fetch live operational records from MySQL via Spring Boot
+            loadActiveWorkspaceData();
+        }
+
+        function handleSystemLogout() {
+            authenticatedUser = null;
+            document.getElementById('main-application').classList.add('app-hidden');
+            document.getElementById('login-screen').classList.remove('app-hidden');
+        }
+
+        function changeWorkspaceTab(targetModule) {
+            currentActiveView = targetModule;
+            loadActiveWorkspaceData();
+        }
+
+        // --- REST API CALL ENGINE FOR REAL MYSQL DATA ---
+        function loadActiveWorkspaceData() {
+            renderSidebarNavigation();
+
+            const canvas = document.getElementById('workspace-canvas');
+
+            if (currentActiveView === 'inventory') {
+                // Fetch live books list from MySQL
+                fetch(`${BACKEND_URL}/books`)
+                    .then(res => res.json())
+                    .then(books => {
+                        let rowsHtml = books.map(book => `
+                            <tr>
+                                <td style="color:#64748b; font-weight:700; font-family:monospace;">${book.id}</td>
+                                <td>
+                                    <div class="book-title">${book.title}</div>
+                                    <div class="book-author">By ${book.author}</div>
+                                </td>
+                                <td style="font-family:monospace; color:#475569;">${book.isbn}</td>
+                                <td><span style="background:#e2e8f0; padding:2px 6px; border-radius:4px; font-size:11px;">${book.category}</span></td>
+                                <td style="text-align:center; font-weight:700;">${book.totalCopies} | <span style="color:#2563eb;">${book.availableCopies}</span></td>
+                                <td><span class="badge bg-available">${book.status || 'Available'}</span></td>
+                            </tr>
+                        `).join('');
+
+                        canvas.innerHTML = `
+                            <div class="canvas-header">
+                                <div>
+                                    <h3>${activeRoleMode === 'ADMIN' ? 'Admin Dashboard: Book Inventory Master Ledger' : 'Student Dashboard: Available Library Catalog'}</h3>
+                                    <p>Live database tables mapping books directly from MySQL tables.</p>
+                                </div>
+                            </div>
+
+                            ${activeRoleMode === 'ADMIN' ? `
+                            <form onsubmit="addNewBookRecord(event)" class="admin-form-box">
+                                <div class="form-box-title">Add New Database Record Entry Form</div>
+                                <input type="text" id="new-title" placeholder="Book Title" required class="form-control">
+                                <input type="text" id="new-author" placeholder="Author Name" required class="form-control">
+                                <input type="text" id="new-isbn" placeholder="ISBN Code" required class="form-control">
+                                <input type="text" id="new-category" placeholder="Category" required class="form-control">
+                                <input type="number" id="new-copies" placeholder="Total Copies Count" min="1" required class="form-control">
+                                <button type="submit" class="form-box-btn">Commit New Book to MySQL Database →</button>
+                            </form>
+                            ` : ''}
+
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Book ID</th>
+                                        <th>Title / Author</th>
+                                        <th>ISBN Number</th>
+                                        <th>Category</th>
+                                        <th style="text-align:center;">Copies (Total|Avail)</th>
+                                        <th>Availability Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${rowsHtml.length > 0 ? rowsHtml : '<tr><td colspan="6" style="text-align:center; color:#94a3b8;">No records found in database. Add a book above!</td></tr>'}</tbody>
+                            </table>
+                        `;
+                    })
+                    .catch(err => {
+                        canvas.innerHTML = `<div style="color:#ef4444; padding:20px; font-weight:bold;">❌ Connection Error: Ensure Eclipse Spring Boot application is running on port 8080!</div>`;
+                    });
+            } else {
+                // Static layouts for other components described in the system flow diagram
+                canvas.innerHTML = `
+                    <div class="canvas-header">
+                        <h3>${currentActiveView.toUpperCase()} Workspace Interface Panel</h3>
+                    </div>
+                    <p style="color:#64748b; font-size:14px;">The dashboard successfully routed to the <strong>${currentActiveView}</strong> screen layer requested by the system flow diagram rules.</p>
+                `;
+            }
+        }
+
+        // --- SUBMIT COMPONENT FOR CREATING MYSQL RECORDS ---
+        function addNewBookRecord(event) {
+            event.preventDefault();
+            
+            const payload = {
+                title: document.getElementById('new-title').value,
+                author: document.getElementById('new-author').value,
+                isbn: document.getElementById('new-isbn').value,
+                category: document.getElementById('new-category').value,
+                totalCopies: parseInt(document.getElementById('new-copies').value)
+            };
+
+            fetch(`${BACKEND_URL}/books`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert("💾 Live Entry Form Compiled: Saved to MySQL database successfully!");
+                loadActiveWorkspaceData();
+            })
+            .catch(err => alert("Error communicating with Spring Boot server."));
+        }
+
+        function renderSidebarNavigation() {
+            const sidebar = document.getElementById('sidebar-navigation-links');
+            const flowDesc = document.getElementById('flow-description');
+
+            if (activeRoleMode === 'ADMIN') {
+                flowDesc.innerText = "Logged into Admin flow workspace. Full metrics access granted.";
+                sidebar.innerHTML = `
+                    <button onclick="changeWorkspaceTab('inventory')" class="nav-btn ${currentActiveView === 'inventory' ? 'active' : ''}">📋 Book Inventory</button>
+                    <button onclick="changeWorkspaceTab('students')" class="nav-btn ${currentActiveView === 'students' ? 'active' : ''}">👥 Student Management</button>
+                    <button onclick="changeWorkspaceTab('issue-return')" class="nav-btn ${currentActiveView === 'issue-return' ? 'active' : ''}">🔄 Issue / Return Portal</button>
+                `;
+            } else {
+                flowDesc.innerText = "Logged into Student workspace view. Checking personal balance details.";
+                sidebar.innerHTML = `
+                    <button onclick="changeWorkspaceTab('inventory')" class="nav-btn ${currentActiveView === 'inventory' ? 'active' : ''}">🔍 Browse Catalog</button>
+                    <button onclick="changeWorkspaceTab('my-books')" class="nav-btn ${currentActiveView === 'my-books' ? 'active' : ''}">📖 My Current Books</button>
+                    <button onclick="changeWorkspaceTab('fines')" class="nav-btn ${currentActiveView === 'fines' ? 'active' : ''}">💰 Fines & Status</button>
+                `;
+            }
+        }
+    </script>
